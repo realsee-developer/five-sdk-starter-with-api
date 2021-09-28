@@ -1,0 +1,15 @@
+{
+  "name": "five-sdk-starter-with-api",
+  "version": "1.0.1",
+  "description": "A Node.js example to show how to access Realsee open API and render 3d space with Five.js",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "private": true,
+  "author": "realsee.com",
+  "license": "ISC",
+  "dependencies": {
+    "crc32": "0.2.2"
+  }
+}
