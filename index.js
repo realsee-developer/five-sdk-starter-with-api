@@ -54,7 +54,7 @@ function html (workJSONObject) {
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Five Work Preivew</title>
+  <title>Five Work Preview</title>
   <style>
     * { margin: 0; padding: 0; }
     html, body { height: 100%; width: 100%; overflow: hidden; }
@@ -83,8 +83,8 @@ window.addEventListener('resize', () => five.refresh())
 
 const modeButtons = [
   { mode: "Panorama", label: "全景模式" },
-  { mode: "Floorplan", label: "模型纵览模式" },
-  { mode: "Topview", label: "模型俯视模式" },
+  { mode: "FloorPlan", label: "模型纵览模式" },
+  { mode: "TopView", label: "模型俯视模式" },
   { mode: "Model", label: "模型漫游模式" },
 ];
 
@@ -122,9 +122,9 @@ const app = http.createServer(async (req, res) => {
       res.end('暂未拍摄项目或项目正在处理。请在App内查看项目处理进度，处理完成后刷新')
       return
     }
-    const lastestWorkCode = workListRes.data.list.sort((a, b) => (Date.parse(b.create_time) - Date.parse(a.create_time)))[0].vr_code
+    const latestWorkCode = workListRes.data.list.sort((a, b) => (Date.parse(b.create_time) - Date.parse(a.create_time)))[0].vr_code
     // 请求VR空间数据
-    const workRes = await request('/open/v1/entity/vr', 'vr_code=' + lastestWorkCode)
+    const workRes = await request('/open/v1/entity/vr', 'vr_code=' + latestWorkCode)
     if (workRes.code !== 0) {
       res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify(workRes))
