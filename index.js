@@ -5,8 +5,8 @@ import { URLSearchParams } from 'url'
 
 const encodedParams = new URLSearchParams();
 
-const AppKey = 'KmAknx7zqqVNpWg8'
-const AppSecret = 'AVE4VGWGBI713YJ1JFVQSNFFCUJSEH7E'
+const AppKey = 'Your-App-Key'
+const AppSecret = 'Your-App-Secret'
 
 async function getAccessToken () {
   // 获取临时access_token
