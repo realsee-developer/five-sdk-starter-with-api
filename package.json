@@ -6,10 +6,11 @@
   "scripts": {
     "start": "node index.js"
   },
+  "type": "module",
   "private": true,
   "author": "realsee.com",
   "license": "ISC",
   "dependencies": {
-    "crc32": "0.2.2"
+    "node-fetch": "^3.2.1"
   }
 }
