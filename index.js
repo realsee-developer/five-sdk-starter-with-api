@@ -1,29 +1,41 @@
-const http = require('http')
-const https = require('https')
-const crypto = require('crypto')
-const crc32 = require('crc32')
+import fetch from 'node-fetch'
+import http from 'http'
+import https from 'https'
+import { URLSearchParams } from 'url'
 
-const AppKey = 'Your-App-Key'
-const AppSecret = 'Your-App-Secret'
+const encodedParams = new URLSearchParams();
 
-function sha256 (token, salt) {
-  return crypto.createHmac('SHA256', salt).update(token).digest('hex')
+const AppKey = 'KmAknx7zqqVNpWg8'
+const AppSecret = 'AVE4VGWGBI713YJ1JFVQSNFFCUJSEH7E'
+
+async function getAccessToken () {
+  // 获取临时access_token
+  encodedParams.set('app_key', AppKey);
+  encodedParams.set('app_secret', AppSecret);
+  
+  const url = 'https://app-gateway.realsee.com/auth/access_token';
+  const options = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: encodedParams
+  };
+  
+  return await fetch(url, options)
+      .then(res => res.json())
+      .then(json => {
+        return json.data.access_token
+      })
+      .catch(err => console.error('error:' + err));
 }
 
-function md5 (token) {
-  return crypto.createHash('md5').update(token).digest('hex')
-}
-
-async function request (api, paramString) {
+async function request (api, paramString, accessToken) {
+  
   return new Promise((resolve, reject) => {
-    // 接口验签
-    const bodyCrc32 = Number('0x' + crc32(paramString))
-    const stringToSign = `body_crc32=${bodyCrc32}method=GETurl=${api}`
-    const timestamp = (Date.now() / 1000).toFixed()
-    const salt = md5(AppKey + AppSecret + timestamp).toUpperCase()
-    const signature = sha256(stringToSign, salt).toUpperCase()
-    const authorization = Buffer.from(AppKey + ':' + signature + ':' + timestamp).toString('base64')
-    const headers = { Authorization: authorization }
+
+    const headers = { Authorization: `access_token ${accessToken}` }
 
     https.get(
       `https://app-gateway.realsee.com${api}?${paramString}`,
@@ -110,7 +122,9 @@ const app = http.createServer(async (req, res) => {
   // 请求VR列表
   // 接口文档 https://developers.realsee.com/docs/#/docs/five/server/openapi
   try {
-    const workListRes = await request('/open/v1/entity/vr/list', 'page=1')
+    const yourAccessToken = await getAccessToken()
+    const workListRes = await request('/open/v1/entity/vr/list', 'page=1', yourAccessToken)
+    
     if (workListRes.code !== 0) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8')
       res.end(JSON.stringify(workListRes))
@@ -123,8 +137,9 @@ const app = http.createServer(async (req, res) => {
       return
     }
     const latestWorkCode = workListRes.data.list.sort((a, b) => (Date.parse(b.create_time) - Date.parse(a.create_time)))[0].vr_code
+    
     // 请求VR空间数据
-    const workRes = await request('/open/v1/entity/vr', 'vr_code=' + latestWorkCode)
+    const workRes = await request('/open/v1/entity/vr', 'vr_code=' + latestWorkCode, yourAccessToken)
     if (workRes.code !== 0) {
       res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify(workRes))
