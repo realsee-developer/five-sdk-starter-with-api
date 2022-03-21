@@ -5,6 +5,7 @@ import { URLSearchParams } from 'url'
 
 const encodedParams = new URLSearchParams();
 
+// 更换为您自己的 ak / sk
 const AppKey = 'Your-App-Key'
 const AppSecret = 'Your-App-Secret'
 
@@ -81,7 +82,7 @@ function html (workJSONObject) {
   <script>const workJSON = ${JSON.stringify(workJSONObject)}</script>
 </head>
 <body>
-<!-- 试图渲染容器 -->
+<!-- 视图渲染容器 -->
 <div id="app"></div>
 <script>
 const five = new FiveSDK.Five();
@@ -100,7 +101,7 @@ const modeButtons = [
   { mode: "Model", label: "模型漫游模式" },
 ];
 
-buttons.appendChild(document.createElement("h3")).innerHTML = "模式控制";
+buttons.appendChild(document.createElement("h3")).innerHTML = "模态控制";
 
 // 模态按钮
 for (let i = 0; i < modeButtons.length; i++) {
@@ -120,7 +121,7 @@ for (let i = 0; i < modeButtons.length; i++) {
 
 const app = http.createServer(async (req, res) => {
   // 请求VR列表
-  // 接口文档 https://developers.realsee.com/docs/#/docs/five/server/openapi
+  // 接口文档 https://realsee.js.org/open/api/#/paths/open-v1-entity-vr-list/get
   try {
     const yourAccessToken = await getAccessToken()
     const workListRes = await request('/open/v1/entity/vr/list', 'page=1', yourAccessToken)
