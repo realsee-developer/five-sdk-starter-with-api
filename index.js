@@ -36,7 +36,7 @@ async function request (api, paramString, accessToken) {
   
   return new Promise((resolve, reject) => {
 
-    const headers = { Authorization: `access_token ${accessToken}` }
+    const headers = { Authorization: `${accessToken}` }
 
     https.get(
       `https://app-gateway.realsee.com${api}?${paramString}`,
